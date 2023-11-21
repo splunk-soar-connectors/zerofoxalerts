@@ -346,7 +346,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return self._process_response(r, action_result)
 
-    def _handle_test_connectivity(self, param):
+    def _test_connectivity(self, param):
         self.save_progress("Checking ZeroFOX API Credentials...")
         self.save_progress(f"token={self._api_key}")
 
@@ -408,7 +408,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         else:
             return status, message, container_id
 
-    def _handle_on_poll(self, param):
+    def _on_poll(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
@@ -467,11 +467,11 @@ class ZerofoxAlertsConnector(BaseConnector):
 
             if self.is_poll_now():
                 self.debug_print("POLL NOW")
-                self.debug_print(param["artifact_count"])
+                self.debug_print(param.get("artifact_count", 0))
 
                 alert_params = {
                     "status": "open,escalated,investigation_completed",
-                    "limit": "%s" % str(param["artifact_count"]),
+                    "limit": "%s" % str(param.get("artifact_count", 0)),
                     "last_modified_min_date": "%s" % str(last_checked_alert_time),
                 }
 
@@ -507,7 +507,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             self.debug_print("----------------------------------------")
 
             if self.is_poll_now():
-                alert_total = param["artifact_count"]
+                alert_total = param.get("artifact_count", 0)
             else:
                 alert_total = response["count"]
 
@@ -603,11 +603,11 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_get_alert(self, param):
+    def _get_alert_by_id(self, param):
         self.debug_print("----------------------------------------")
         self.debug_print("get_alert_by_id")
         self.debug_print("----------------------------------------")
-        self.debug_print("Param: {}".format(param))
+        self.debug_print(f"Param: {param}")
 
         action_result = ActionResult(dict(param))
         self.add_action_result(action_result)
@@ -615,7 +615,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             "Initial action_result dictionary: {}".format(action_result.get_dict())
         )
 
-        alert_id = param["alert_id"]
+        alert_id = param.get("alert_id", 0.0)
 
         try:
             if isinstance(alert_id, float):
@@ -670,7 +670,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_alert_tag(self, param):
+    def _modify_alert_tag(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
@@ -680,9 +680,9 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        alert_id = param["alert_id"]
-        alert_tag = param["alert_tag"]
-        tag_action = param["tag_action"]
+        alert_id = param.get("alert_id")
+        alert_tag = param.get("alert_tag")
+        tag_action = param.get("tag_action")
 
         self.save_progress(f"Adding tag {alert_tag} to alert {alert_id}")
 
@@ -699,8 +699,8 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         params = {"changes": [changes]}
 
-        self.debug_print("token={}".format(self._api_key))
-        self.debug_print("params={}".format(params))
+        self.debug_print(f"token={self._api_key}")
+        self.debug_print(f"params={params}")
 
         # make rest call
         ret_val, response = self._make_rest_call(
@@ -745,20 +745,17 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_threat_submit(self, param):
-        # Implement the handler here
-        # use self.save_progress(...) to send progress messages back to the platform
+    def _threat_submit(self, param):
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         self.debug_print(f"Param: {param}")
 
-        # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        source = param["source"]
-        alert_type = param["alert_type"]
-        violation = param["violation"]
-        asset_id = param["asset_id"]
+        source = param.get("source")
+        alert_type = param.get("alert_type")
+        violation = param.get("violation")
+        asset_id = param.get("asset_id")
 
         self.save_progress(f"Threat submission {source} to asset {asset_id}")
 
@@ -823,7 +820,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_alert_action(self, param):
+    def _take_alert_action(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
@@ -833,8 +830,8 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        alert_id = param["alert_id"]
-        alert_action = param["alert_action"]
+        alert_id = param.get("alert_id")
+        alert_action = param.get("alert_action")
 
         self.save_progress(f"Issuing {alert_action} on alert {alert_id}")
         endpoint = f"/1.0/alerts/{alert_id}/{alert_action}/"
@@ -898,22 +895,22 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.debug_print(f"Ingesting handle action in: {param}")
 
         if action_id == "test_connectivity":
-            ret_val = self._handle_test_connectivity(param)
+            ret_val = self._test_connectivity(param)
 
         elif action_id == "get_alert_by_id":
-            ret_val = self._handle_get_alert(param)
+            ret_val = self._get_alert_by_id(param)
 
         elif action_id == "take_alert_action":
-            ret_val = self._handle_alert_action(param)
+            ret_val = self._take_alert_action(param)
 
         elif action_id == "modify_alert_tag":
-            ret_val = self._handle_alert_tag(param)
+            ret_val = self._modify_alert_tag(param)
 
         elif action_id == "threat_submit":
-            ret_val = self._handle_threat_submit(param)
+            ret_val = self._threat_submit(param)
 
         elif action_id == "on_poll":
-            ret_val = self._handle_on_poll(param)
+            ret_val = self._on_poll(param)
 
         return ret_val
 

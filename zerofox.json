@@ -44,7 +44,7 @@
             "id": 1
         },
         "reviewed": {
-            "description": "Only poll reviewed alerts.",
+            "description": "Only poll reviewed alerts",
             "data_type": "boolean",
             "required": true,
             "default": "True",
@@ -67,7 +67,7 @@
             "data_type": "boolean",
             "required": false,
             "default": "True",
-            "order": 2,
+            "order": 4,
             "name": "verify_server_cert",
             "id": 4
         }
@@ -76,7 +76,7 @@
         {
             "action": "test connectivity",
             "identifier": "test_connectivity",
-            "description": "Validate the asset configuration for connectivity using supplied configuration.",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
             "verbose": ".",
             "type": "test",
             "read_only": true,
@@ -87,13 +87,13 @@
         {
             "action": "on poll",
             "identifier": "on_poll",
-            "description": "Callback action for the on_poll ingest functionality.",
+            "description": "Callback action for the on_poll ingest functionality",
             "verbose": ".",
             "type": "ingest",
             "read_only": true,
             "parameters": {
                 "container_id": {
-                    "description": "Container IDs to limit the ingestion to.",
+                    "description": "Container IDs to limit the ingestion to",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -104,7 +104,7 @@
                     "name": "container_id"
                 },
                 "start_time": {
-                    "description": "Start of time range, in epoch time (milliseconds).",
+                    "description": "Start of time range, in epoch time (milliseconds)",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -115,7 +115,7 @@
                     "name": "start_time"
                 },
                 "end_time": {
-                    "description": "End of time range, in epoch time (milliseconds).",
+                    "description": "End of time range, in epoch time (milliseconds)",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -126,7 +126,7 @@
                     "name": "end_time"
                 },
                 "container_count": {
-                    "description": "Maximum number of container records to query for.",
+                    "description": "Maximum number of container records to query for",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -137,7 +137,7 @@
                     "name": "container_count"
                 },
                 "artifact_count": {
-                    "description": "Maximum number of artifact records to query for.",
+                    "description": "Maximum number of artifact records to query for",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -154,7 +154,7 @@
         {
             "action": "take action",
             "identifier": "take_alert_action",
-            "description": "Take action on a ZeroFox an alert.",
+            "description": "Take action on a ZeroFox an alert",
             "verbose": "Take action on a ZeroFox an alert.",
             "type": "investigate",
             "read_only": true,
@@ -173,7 +173,7 @@
                 "alert_action": {
                     "data_type": "string",
                     "order": 1,
-                    "description": "The action to take.",
+                    "description": "The action to take",
                     "value_list": [
                         "close",
                         "escalate",
@@ -229,13 +229,13 @@
         {
             "action": "tag alert",
             "identifier": "modify_alert_tag",
-            "description": "Add or remove a tag to a ZeroFox alert.",
+            "description": "Add or remove a tag to a ZeroFox alert",
             "verbose": "Add or remove a tag to a ZeroFox alert.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
                 "alert_id": {
-                    "description": "ZeroFox Alert ID.",
+                    "description": "ZeroFox Alert ID",
                     "data_type": "numeric",
                     "required": true,
                     "primary": false,
@@ -259,7 +259,7 @@
                 "tag_action": {
                     "data_type": "string",
                     "order": 2,
-                    "description": "Tag action: add or remove.",
+                    "description": "Tag action: add or remove",
                     "value_list": ["add", "remove"],
                     "default": "add",
                     "primary": false,
@@ -317,13 +317,13 @@
         {
             "action": "threat submission",
             "identifier": "threat_submit",
-            "description": "Add a manual threat to ZeroFox.",
+            "description": "Add a manual threat to ZeroFox",
             "verbose": "Add a manual threat to ZeroFox.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
                 "source": {
-                    "description": "Source URL.",
+                    "description": "Source URL",
                     "data_type": "string",
                     "required": true,
                     "primary": false,
@@ -334,7 +334,7 @@
                     "name": "source"
                 },
                 "alert_type": {
-                    "description": "Alert Type.",
+                    "description": "Alert Type",
                     "data_type": "string",
                     "required": true,
                     "primary": false,
@@ -354,7 +354,7 @@
                     "name": "alert_type"
                 },
                 "violation": {
-                    "description": "Violation.",
+                    "description": "Violation",
                     "data_type": "string",
                     "required": true,
                     "primary": false,
@@ -375,7 +375,7 @@
                     "name": "violation"
                 },
                 "asset_id": {
-                    "description": "The ZeroFox Asset ID to associate the threat.",
+                    "description": "The ZeroFox Asset ID to associate the threat",
                     "data_type": "numeric",
                     "required": true,
                     "primary": false,
