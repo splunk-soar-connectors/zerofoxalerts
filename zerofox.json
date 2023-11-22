@@ -10,6 +10,14 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "ZeroFox",
+    "contributors": [
+        {
+            "name": "Diego Ramirez"
+        },
+        {
+            "name": "Felipe Garrido"
+        }
+    ],
     "license": "Copyright (c) ZeroFox, 2023",
     "app_version": "1.0.0",
     "utctime_updated": "2023-07-26T17:04:21.523369Z",
@@ -404,22 +412,22 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "status",
-                    "column_order": 2
+                    "column_order": 1
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_order": 3
+                    "column_order": 2
                 },
                 {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
-                    "column_order": 4
+                    "column_order": 3
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
-                    "column_order": 5
+                    "column_order": 4
                 }
             ],
             "render": {
