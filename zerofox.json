@@ -1,4 +1,5 @@
 {
+    "appid": "015d60bf-fe28-4eeb-b726-161855707d7a",
     "name": "ZeroFox",
     "description": "ZeroFox Alerts for Splunk SOAR",
     "type": "information",
