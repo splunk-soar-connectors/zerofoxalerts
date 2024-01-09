@@ -694,7 +694,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         alert_id = param.get("alert_id")
         alert_tag = param.get("alert_tag")
-        tag_action = param.get("tag_action")
+        tag_action = param.get("tag_action", "add")
 
         self.save_progress(f"Adding tag {alert_tag} to alert {alert_id}")
 
@@ -843,7 +843,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         alert_id = param.get("alert_id")
-        alert_action = param.get("alert_action")
+        alert_action = param.get("alert_action", "close")
 
         self.save_progress(f"Issuing {alert_action} on alert {alert_id}")
         endpoint = f"/1.0/alerts/{alert_id}/{alert_action}/"

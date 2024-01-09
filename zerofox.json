@@ -4,8 +4,8 @@
     "description": "ZeroFox Alerts for Splunk SOAR",
     "type": "information",
     "product_vendor": "ZeroFox",
-    "logo": "zerofox.svg",
-    "logo_dark": "zerofox_dark.svg",
+    "logo": "logo_zerofox.svg",
+    "logo_dark": "logo_zerofox_dark.svg",
     "product_name": "ZeroFox",
     "python_version": "3",
     "product_version_regex": ".*",
@@ -37,33 +37,25 @@
             "description": "Your ZeroFOX platform username or email address",
             "data_type": "string",
             "required": true,
-            "order": 1,
-            "name": "username",
-            "id": 1
+            "order": 1
         },
         "reviewed": {
             "description": "Only poll reviewed alerts",
             "data_type": "boolean",
-            "default": "True",
-            "order": 2,
-            "name": "reviewed",
-            "id": 2
+            "default": true,
+            "order": 2
         },
         "history_days_interval": {
             "description": "Initial historical alert poll interval (in days)",
             "data_type": "string",
             "required": true,
-            "order": 3,
-            "name": "history_days_interval",
-            "id": 3
+            "order": 3
         },
         "verify_server_cert": {
             "description": "Verify Sever Certificate",
             "data_type": "boolean",
-            "default": "True",
-            "order": 4,
-            "name": "verify_server_cert",
-            "id": 4
+            "default": true,
+            "order": 4
         }
     },
     "actions": [
@@ -71,7 +63,6 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": ".",
             "type": "test",
             "read_only": true,
             "parameters": {},
@@ -89,32 +80,27 @@
                 "container_id": {
                     "description": "Container IDs to limit the ingestion to",
                     "data_type": "string",
-                    "order": 0,
-                    "name": "container_id"
+                    "order": 0
                 },
                 "start_time": {
                     "description": "Start of time range, in epoch time (milliseconds)",
                     "data_type": "numeric",
-                    "order": 1,
-                    "name": "start_time"
+                    "order": 1
                 },
                 "end_time": {
                     "description": "End of time range, in epoch time (milliseconds)",
                     "data_type": "numeric",
-                    "order": 2,
-                    "name": "end_time"
+                    "order": 2
                 },
                 "container_count": {
                     "description": "Maximum number of container records to query for",
                     "data_type": "numeric",
-                    "order": 3,
-                    "name": "container_count"
+                    "order": 3
                 },
                 "artifact_count": {
                     "description": "Maximum number of artifact records to query for",
                     "data_type": "numeric",
-                    "order": 4,
-                    "name": "artifact_count"
+                    "order": 4
                 }
             },
             "output": [],
@@ -125,15 +111,13 @@
             "identifier": "take_alert_action",
             "description": "Take action on a ZeroFox an alert",
             "verbose": "Take action on a ZeroFox an alert.",
-            "type": "investigate",
-            "read_only": true,
+            "type": "generic",
             "parameters": {
                 "alert_id": {
                     "description": "ZeroFox Alert ID",
                     "data_type": "numeric",
                     "required": true,
-                    "order": 0,
-                    "name": "alert_id"
+                    "order": 0
                 },
                 "alert_action": {
                     "data_type": "string",
@@ -146,8 +130,7 @@
                         "mark_not_helpful"
                     ],
                     "default": "close",
-                    "required": true,
-                    "name": "alert_action"
+                    "required": true
                 }
             },
             "output": [
@@ -184,17 +167,20 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_order": 3
+                    "column_order": 3,
+                    "column_name": "Message"
                 },
                 {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
-                    "column_order": 4
+                    "column_order": 4,
+                    "column_name": "Total Objects"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
-                    "column_order": 5
+                    "column_order": 5,
+                    "column_name": "Total Objects Successful"
                 }
             ],
             "render": {
@@ -207,22 +193,19 @@
             "identifier": "modify_alert_tag",
             "description": "Add or remove a tag to a ZeroFox alert",
             "verbose": "Add or remove a tag to a ZeroFox alert.",
-            "type": "investigate",
-            "read_only": true,
+            "type": "generic",
             "parameters": {
                 "alert_id": {
                     "description": "ZeroFox Alert ID",
                     "data_type": "numeric",
                     "required": true,
-                    "order": 0,
-                    "name": "alert_id"
+                    "order": 0
                 },
                 "alert_tag": {
                     "data_type": "string",
                     "order": 1,
                     "description": "Tag",
-                    "required": true,
-                    "name": "alert_tag"
+                    "required": true
                 },
                 "tag_action": {
                     "data_type": "string",
@@ -233,8 +216,7 @@
                         "remove"
                     ],
                     "default": "add",
-                    "required": true,
-                    "name": "tag_action"
+                    "required": true
                 }
             },
             "output": [
@@ -277,17 +259,20 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_order": 4
+                    "column_order": 4,
+                    "column_name": "Message"
                 },
                 {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
-                    "column_order": 5
+                    "column_order": 5,
+                    "column_name": "Total Objects"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
-                    "column_order": 6
+                    "column_order": 6,
+                    "column_name": "Total Objects Successful"
                 }
             ],
             "render": {
@@ -300,15 +285,13 @@
             "identifier": "threat_submit",
             "description": "Add a manual threat to ZeroFox",
             "verbose": "Add a manual threat to ZeroFox.",
-            "type": "investigate",
-            "read_only": true,
+            "type": "generic",
             "parameters": {
                 "source": {
                     "description": "Source URL",
                     "data_type": "string",
                     "required": true,
-                    "order": 0,
-                    "name": "source"
+                    "order": 0
                 },
                 "alert_type": {
                     "description": "Alert Type",
@@ -324,8 +307,7 @@
                         "page_content",
                         "account"
                     ],
-                    "order": 1,
-                    "name": "alert_type"
+                    "order": 1
                 },
                 "violation": {
                     "description": "Violation",
@@ -342,15 +324,13 @@
                         "fraud",
                         "other"
                     ],
-                    "order": 2,
-                    "name": "violation"
+                    "order": 2
                 },
                 "asset_id": {
                     "description": "The ZeroFox Asset ID to associate the threat",
                     "data_type": "numeric",
                     "required": true,
-                    "order": 3,
-                    "name": "asset_id"
+                    "order": 3
                 }
             },
             "output": [
@@ -393,17 +373,20 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_order": 2
+                    "column_order": 2,
+                    "column_name": "Message"
                 },
                 {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
-                    "column_order": 3
+                    "column_order": 3,
+                    "column_name": "Total Objects"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
-                    "column_order": 4
+                    "column_order": 4,
+                    "column_name": "Total Objects Successful"
                 }
             ],
             "render": {
@@ -423,8 +406,7 @@
                     "description": "ZeroFox Alert ID",
                     "data_type": "numeric",
                     "required": true,
-                    "order": 0,
-                    "name": "alert_id"
+                    "order": 0
                 }
             },
             "output": [
@@ -486,17 +468,20 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_order": 8
+                    "column_order": 8,
+                    "column_name": "Message"
                 },
                 {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
-                    "column_order": 9
+                    "column_order": 9,
+                    "column_name": "Total Objects"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
-                    "column_order": 10
+                    "column_order": 10,
+                    "column_name": "Total Objects Successful"
                 }
             ],
             "render": {
@@ -508,10 +493,5 @@
             "versions": "EQ(*)"
         }
     ],
-    "custom_made": true,
-    "directory": "zerofox_015d60bf-fe28-4eeb-b726-161855707d7a",
-    "version": 1,
-    "appname": "-",
-    "executable": "spawn3",
-    "disabled": false
+    "version": "EQ(*)"
 }
