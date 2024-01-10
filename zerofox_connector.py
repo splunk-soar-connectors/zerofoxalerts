@@ -14,8 +14,8 @@
 # and limitations under the License.
 
 import json
-from datetime import datetime, timedelta
 import sys
+from datetime import datetime, timedelta
 
 # Phantom App imports
 import phantom.app as phantom
@@ -65,7 +65,7 @@ class AlertMapper:
           "severity": "low",
           "type": null,
           "kill_chain": null,
-          "hash": "7a61100894c1eb24a59c67ce245d2d8c",
+          "hash": "EXAMPLEHASH",
           "cef": {
             "sourceAddress": "1.1.1.1"
           },
@@ -165,7 +165,7 @@ class AlertMapper:
           "close_time": "",
           "kill_chain": "",
           "owner": "admin",
-          "hash": "52d277ed6eba51d86190cd72405df749",
+          "hash": "EXAMPLEHASH",
           "tags": [""],
           "asset_name": "",
           "artifact_update_time": "2016-01-16 07:18:46.631875+00",
