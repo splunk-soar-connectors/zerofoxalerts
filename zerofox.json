@@ -74,7 +74,6 @@
             "action": "on poll",
             "identifier": "on_poll",
             "description": "Callback action for the on_poll ingest functionality",
-            "verbose": ".",
             "type": "ingest",
             "read_only": true,
             "parameters": {
