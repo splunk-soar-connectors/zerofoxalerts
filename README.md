@@ -78,9 +78,7 @@ No Output
 Take action on a ZeroFox an alert
 
 Type: **generic**  
-Read only: ****
-
-Take action on a ZeroFox an alert.
+Read only: **False**
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -104,9 +102,7 @@ summary.total_objects_successful | numeric |  |
 Add or remove a tag to a ZeroFox alert
 
 Type: **generic**  
-Read only: ****
-
-Add or remove a tag to a ZeroFox alert.
+Read only: **False**
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -132,9 +128,7 @@ summary.total_objects_successful | numeric |  |
 Add a manual threat to ZeroFox
 
 Type: **generic**  
-Read only: ****
-
-Add a manual threat to ZeroFox.
+Read only: **False**
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -163,8 +157,6 @@ Retrieve a single alert and it's details, identified by its unique integer ident
 
 Type: **investigate**  
 Read only: **True**
-
-Retrieve a single alert and it's details, identified by its unique integer identifier.
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
