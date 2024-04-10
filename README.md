@@ -1,7 +1,5 @@
 [comment]: # "Auto-generated SOAR connector documentation"
 # ZeroFox
-
-Publisher: ZeroFox  
 Connector Version: 3.5.1  
 Product Vendor: ZeroFox  
 Product Name: ZeroFox  
