@@ -23,7 +23,7 @@
     "utctime_updated": "2023-07-26T17:04:21.523369Z",
     "package_name": "phantom_zerofox",
     "main_module": "zerofox_connector.py",
-    "min_phantom_version": "5.5.0",
+    "min_phantom_version": "6.1.1",
     "fips_compliant": false,
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {},
