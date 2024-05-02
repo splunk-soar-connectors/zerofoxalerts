@@ -212,7 +212,7 @@ class ZeroFoxClient:
         return {
             "Authorization": f"Token {self.token}",
             "Content-Type": "application/json",
-            "zf-source": "splunk",
+            "zf-source": "Splunk-SOAR",
         }
 
     def fetch_alerts(self):
