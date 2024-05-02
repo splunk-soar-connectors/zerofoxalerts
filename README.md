@@ -1,10 +1,12 @@
 [comment]: # "Auto-generated SOAR connector documentation"
 # ZeroFox
+
+Publisher: ZeroFox  
 Connector Version: 3.5.1  
 Product Vendor: ZeroFox  
 Product Name: ZeroFox  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.5.0  
+Minimum Product Version: 6.1.1  
 
 ZeroFox Alerts for Splunk SOAR
 
