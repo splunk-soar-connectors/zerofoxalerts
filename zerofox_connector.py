@@ -33,6 +33,10 @@ class RetVal(tuple):
 
 
 class AlertMapper:
+    def __init__(self, _container_label, app_id):
+        self._container_label = _container_label
+        self.app_id = app_id
+
     def _phantom_severity_transform(self, severity):
         """
         Map ZeroFOX severity to Phantom severity.
@@ -198,7 +202,7 @@ class AlertMapper:
         container["tags"] = alert["tags"]
         date_time_obj = datetime.strptime(alert["timestamp"], "%Y-%m-%dT%H:%M:%S+00:00")
         container["start_time"] = date_time_obj.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        container["ingest_app_id"] = self.get_app_id()
+        container["ingest_app_id"] = self.app_id
 
         return container
 
@@ -230,7 +234,6 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Do note that the app json defines the asset config, so please
         # modify this as you deem fit.
         self._base_url = ZEROFOX_API_URL
-        self.mapper = AlertMapper()
 
     def _get_app_headers(self):
         return {
@@ -832,6 +835,88 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _modify_notes(self, param):
+        self.debug_print(f"Param: {param}")
+
+        # Add an action result object to self (BaseConnector) to represent the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        alert_id = param.get("alert_id")
+
+        endpoint = f"/1.0/alerts/{alert_id}/"
+        headers = self._get_app_headers()
+
+        ret_val, response = self._make_rest_call(
+            endpoint, action_result, method="get", headers=headers
+        )
+
+        if phantom.is_fail(ret_val):
+            action_result.set_status(
+                phantom.APP_ERROR,
+                f"Error fetching alert with id: {alert_id}",
+            )
+            self.debug_print(
+                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
+            )
+            summary = action_result.update_summary({})
+            summary["status"] = "failed"
+            return action_result.set_status(phantom.APP_ERROR)
+
+        alert = response.get("alert", {})
+
+        if not alert:
+            self.debug_print(f"Failed to obtain data of alert id: {alert_id}")
+            summary = action_result.update_summary({})
+            summary["status"] = "failed"
+            return action_result.set_status(phantom.APP_ERROR)
+
+        action = param.get("modify_action", "append")
+        previous_notes = alert.get("notes", "")
+        notes = param.get("notes", "")
+        new_notes = ""
+        if action == "replace":
+            new_notes = notes
+        elif action == "append":
+            new_notes = notes if not previous_notes else f"{previous_notes}\n{notes}"
+        else:
+            self.debug_print(f"Modify notes failed because it found action: {action}")
+            summary = action_result.update_summary({})
+            summary["status"] = "failed"
+            return action_result.set_status(phantom.APP_ERROR)
+
+        ret_val, response = self._make_rest_call(
+            endpoint,
+            action_result,
+            method="post",
+            json={"notes": new_notes},
+            headers=headers,
+        )
+
+        if phantom.is_fail(ret_val):
+            action_result.set_status(
+                phantom.APP_ERROR,
+                f"Error changing notes on alert for {alert_id}, with notes {notes}",
+            )
+            self.debug_print(
+                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
+            )
+            summary = action_result.update_summary({})
+            summary["status"] = "failed"
+            return action_result.set_status(phantom.APP_ERROR)
+
+        # Add the response into the data section
+        action_result.add_data(response)
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+        summary["num_alerts"] = 1
+        summary["status"] = "success"
+
+        self.save_progress("Notes Modified Succesfully")
+        self.debug_print(f"{self._banner} response: {response}")
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def _take_alert_action(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
@@ -921,6 +1006,9 @@ class ZerofoxAlertsConnector(BaseConnector):
         elif action_id == "threat_submit":
             ret_val = self._threat_submit(param)
 
+        elif action_id == "modify_notes":
+            ret_val = self._modify_notes(param)
+
         elif action_id == "on_poll":
             ret_val = self._on_poll(param)
 
@@ -954,6 +1042,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.zf_client = ZeroFoxClient(
             token=config.get("zerofox_api_token"), username=config.get("username")
         )
+        self.mapper = AlertMapper(self._container_label, self.get_app_id())
 
         return phantom.APP_SUCCESS
 
@@ -975,7 +1064,14 @@ if __name__ == "__main__":
     argparser.add_argument("input_test_json", help="Input Test JSON file")
     argparser.add_argument("-u", "--username", help="username", required=False)
     argparser.add_argument("-p", "--password", help="password", required=False)
-    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
+    argparser.add_argument(
+        "-v",
+        "--verify",
+        action="store_true",
+        help="verify",
+        required=False,
+        default=False,
+    )
 
     args = argparser.parse_args()
     session_id = None
