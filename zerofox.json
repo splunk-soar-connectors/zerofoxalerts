@@ -545,7 +545,8 @@
                     "data_type": "string",
                     "column_name": "Alert Notes",
                     "column_order": 1
-                }{
+                },
+                {
                     "data_path": "action_result.parameter.modify_action",
                     "data_type": "string",
                     "column_name": "Modify Action",
