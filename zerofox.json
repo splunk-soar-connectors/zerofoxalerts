@@ -19,7 +19,7 @@
         }
     ],
     "license": "Copyright (c) ZeroFox, 2024",
-    "app_version": "3.5.1",
+    "app_version": "3.6.0",
     "utctime_updated": "2023-07-26T17:04:22.513369Z",
     "package_name": "phantom_zerofox",
     "main_module": "zerofox_connector.py",
@@ -497,7 +497,7 @@
             "identifier": "modify_notes",
             "description": "Append or replace notes on ZeroFox alert",
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "parameters": {
                 "alert_id": {
                     "description": "ZeroFox Alert ID",
