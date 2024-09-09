@@ -43,6 +43,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [tag alert](#action-tag-alert) - Add or remove a tag to a ZeroFox alert  
 [threat submission](#action-threat-submission) - Add a manual threat to ZeroFox  
 [lookup alert](#action-lookup-alert) - Retrieve a single alert and it's details, identified by its unique integer identifier  
+[modify notes](#action-modify-notes) - Append or replace notes on ZeroFox alert
 
 ## action: 'test connectivity'
 Validate the asset configuration for connectivity using supplied configuration
@@ -178,3 +179,25 @@ action_result.summary | string |  |
 action_result.message | string |  |  
 summary.total_objects | numeric |  |  
 summary.total_objects_successful | numeric |  |  
+
+## action: 'modify notes'
+Append or replace notes on ZeroFox alert
+
+Type: **generic**
+Read only: **False**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**alert_id** |  required  | ZeroFox Alert ID | numeric |
+**modify_action** |  required  | Modify action: append or replace | string |
+**notes** |  required  | Alert's notes | string |
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed
+action_result.parameter.alert_id | numeric |  |
+action_result.parameter.notes | string |  |
+action_result.parameter.modify_action | string |  |
+action_result.data | string | |

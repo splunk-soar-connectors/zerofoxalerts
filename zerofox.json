@@ -19,7 +19,7 @@
         }
     ],
     "license": "Copyright (c) ZeroFox, 2024",
-    "app_version": "3.5.1",
+    "app_version": "3.6.0",
     "utctime_updated": "2023-07-26T17:04:22.513369Z",
     "package_name": "phantom_zerofox",
     "main_module": "zerofox_connector.py",
@@ -489,6 +489,92 @@
                 "title": "ZeroFox Alert Details",
                 "type": "table",
                 "height": 5
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "modify notes",
+            "identifier": "modify_notes",
+            "description": "Append or replace notes on ZeroFox alert",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "alert_id": {
+                    "description": "ZeroFox Alert ID",
+                    "data_type": "numeric",
+                    "required": true,
+                    "order": 0
+                },
+                "modify_action": {
+                    "data_type": "string",
+                    "order": 1,
+                    "description": "Modify action: append or replace",
+                    "value_list": [
+                        "append",
+                        "replace"
+                    ],
+                    "default": "append",
+                    "required": true
+                },
+                "notes": {
+                    "data_type": "string",
+                    "order": 2,
+                    "description": "Alert's notes",
+                    "required": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.alert_id",
+                    "data_type": "numeric",
+                    "column_name": "Alert ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.notes",
+                    "data_type": "string",
+                    "column_name": "Alert Notes",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.modify_action",
+                    "data_type": "string",
+                    "column_name": "Modify Action",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
             },
             "versions": "EQ(*)"
         }
