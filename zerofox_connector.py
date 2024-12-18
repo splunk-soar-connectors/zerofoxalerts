@@ -108,7 +108,7 @@ class AlertMapper:
         artifact["tags"] = [alert["network"]]
         artifact["start_time"] = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         artifact["source_data_identifier"] = alert["id"]
-        artifact["run_automation"] = False
+        artifact["run_automation"] = True
 
         # get screenshot from metadata
         try:
@@ -125,9 +125,7 @@ class AlertMapper:
 
         artifact["cef"] = dict()
         artifact["cef"]["alert_id"] = alert["id"]
-        artifact["cef"][
-            "zerofox_url"
-        ] = f"https://cloud.zerofox.com/alerts/{alert['id']}"
+        artifact["cef"]["zerofox_url"] = f"https://cloud.zerofox.com/alerts/{alert['id']}"
         artifact["cef"]["alert_type"] = alert["alert_type"]
         artifact["cef"]["offending_content_url"] = alert["offending_content_url"]
         artifact["cef"]["screenshot_url"] = screenshot_url
@@ -186,15 +184,11 @@ class AlertMapper:
 
         container["label"] = self._container_label
         container["name"] = "ZeroFOX Alert: {}".format(alert["rule_name"])
-        container["description"] = "{}, {}".format(
-            alert["network"].title().replace("_", " "), alert["alert_type"]
-        )
+        container["description"] = "{}, {}".format(alert["network"].title().replace("_", " "), alert["alert_type"])
         container["sensitivity"] = "white"
         container["custom_fields"] = dict()
         container["custom_fields"]["alert_type"] = str(alert["alert_type"])
-        container["custom_fields"][
-            "alert_url"
-        ] = f"https://cloud.zerofox.com/alerts/{alert['id']}"
+        container["custom_fields"]["alert_url"] = f"https://cloud.zerofox.com/alerts/{alert['id']}"
 
         container["severity"] = self._phantom_severity_transform(alert["severity"])
         container["source_data_identifier"] = alert["id"]
@@ -247,9 +241,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(
-            action_result.set_status(
-                phantom.APP_ERROR, "Empty response and no information in the header"
-            ),
+            action_result.set_status(phantom.APP_ERROR, "Empty response and no information in the header"),
             None,
         )
 
@@ -290,9 +282,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} Data from server: {1}".format(
-            r.status_code, r.text.replace("{", "{{").replace("}", "}}")
-        )
+        message = "Error from server. Status Code: {0} Data from server: {1}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -334,9 +324,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             request_func = getattr(requests, method)
         except AttributeError:
             return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR, f"Invalid method: {method}"
-                ),
+                action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"),
                 resp_json,
             )
 
@@ -347,9 +335,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             url = self._base_url + endpoint
 
         try:
-            r = request_func(
-                url, verify=config.get("verify_server_cert", False), **kwargs
-            )
+            r = request_func(url, verify=config.get("verify_server_cert", False), **kwargs)
         except Exception as e:
             return RetVal(
                 action_result.set_status(
@@ -372,9 +358,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         endpoint = "/1.0/users/me/"
         url = ZEROFOX_API_URL + endpoint
 
-        ret_val, _ = self._make_rest_call(
-            url, action_result, params=None, headers=headers
-        )
+        ret_val, _ = self._make_rest_call(url, action_result, params=None, headers=headers)
 
         if phantom.is_fail(ret_val):
             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -401,9 +385,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             self.error_print("start time or end time not specified")
             return None, None
 
-        return datetime.fromtimestamp(
-            start_time_param / 1000.0
-        ), datetime.fromtimestamp(end_time_param / 1000.0)
+        return datetime.fromtimestamp(start_time_param / 1000.0), datetime.fromtimestamp(end_time_param / 1000.0)
 
     def _save_alert(self, alert):
         self.debug_print("----------------------------------------")
@@ -440,17 +422,13 @@ class ZerofoxAlertsConnector(BaseConnector):
         start_time, end_time = self._phantom_daterange(param)
 
         if start_time is None or end_time is None:
-            action_result.set_status(
-                phantom.APP_ERROR, status_message="start time or end time not specified"
-            )
+            action_result.set_status(phantom.APP_ERROR, status_message="start time or end time not specified")
 
         else:
             self.save_progress("Start to create alerts")
             self.save_progress(f"incident interval_days: {self._history_days_interval}")
 
-            history_date = datetime.utcnow() - timedelta(
-                int(self._history_days_interval)
-            )
+            history_date = datetime.utcnow() - timedelta(int(self._history_days_interval))
 
             # reformat date to use with last_modified_min_date
             interval_startdate = history_date.strftime("%Y-%m-%d %H:%M:%S")
@@ -470,15 +448,11 @@ class ZerofoxAlertsConnector(BaseConnector):
 
             try:
                 last_checked_alert_time = self._state["last_polled"]
-                last_checked_alert_time = last_checked_alert_time.strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                last_checked_alert_time = last_checked_alert_time.strftime("%Y-%m-%d %H:%M:%S")
             except:
                 last_checked_alert_time = interval_startdate
 
-            self.debug_print(
-                "last_checked_alert_time: {}".format(last_checked_alert_time)
-            )
+            self.debug_print("last_checked_alert_time: {}".format(last_checked_alert_time))
 
             if self.is_poll_now():
                 self.debug_print("POLL NOW")
@@ -510,9 +484,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             self.debug_print(f"params={alert_params}")
 
             # make rest call
-            ret_val, response = self._make_rest_call(
-                endpoint, action_result, params=alert_params, headers=headers
-            )
+            ret_val, response = self._make_rest_call(endpoint, action_result, params=alert_params, headers=headers)
 
             if phantom.is_fail(ret_val):
                 # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -546,9 +518,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
                 if status == phantom.APP_SUCCESS:
                     num_processed += 1
-                    self.save_progress(
-                        f"ZeroFOX Alert {alert_id} ingested ({num_processed} of {alert_total})"
-                    )
+                    self.save_progress(f"ZeroFOX Alert {alert_id} ingested ({num_processed} of {alert_total})")
                 else:
                     self.error_print(f"Did not ingest alert {alert_id}")
                     action_result.set_status(phantom.APP_ERROR, message)
@@ -563,9 +533,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                         alert_params = None
 
                         # make rest call
-                        ret_val, response = self._make_rest_call(
-                            next_url, action_result, params=None, headers=headers
-                        )
+                        ret_val, response = self._make_rest_call(next_url, action_result, params=None, headers=headers)
 
                         if phantom.is_fail(ret_val):
                             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -584,9 +552,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
                             if status == phantom.APP_SUCCESS:
                                 num_processed += 1
-                                self.save_progress(
-                                    f"ZeroFOX Alert {alert_id} ingested ({num_processed} of {alert_total})"
-                                )
+                                self.save_progress(f"ZeroFOX Alert {alert_id} ingested ({num_processed} of {alert_total})")
                             else:
                                 self.error_print(f"Did not ingest alert {alert_id}")
                                 action_result.set_status(phantom.APP_ERROR, message)
@@ -626,9 +592,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         action_result = ActionResult(dict(param))
         self.add_action_result(action_result)
-        self.debug_print(
-            "Initial action_result dictionary: {}".format(action_result.get_dict())
-        )
+        self.debug_print("Initial action_result dictionary: {}".format(action_result.get_dict()))
 
         alert_id = param.get("alert_id", 0.0)
 
@@ -658,9 +622,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.debug_print(f"token={self._api_key}")
 
         # make rest call
-        ret_val, response = self._make_rest_call(
-            endpoint, action_result, params=None, headers=headers
-        )
+        ret_val, response = self._make_rest_call(endpoint, action_result, params=None, headers=headers)
 
         if phantom.is_fail(ret_val):
             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -718,9 +680,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.debug_print(f"params={params}")
 
         # make rest call
-        ret_val, response = self._make_rest_call(
-            endpoint, action_result, method="post", json=params, headers=headers
-        )
+        ret_val, response = self._make_rest_call(endpoint, action_result, method="post", json=params, headers=headers)
 
         if phantom.is_fail(ret_val):
             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -732,9 +692,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                 phantom.APP_ERROR,
                 f"Error adding tag {alert_tag} on alert for: {alert_id}",
             )
-            self.debug_print(
-                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
-            )
+            self.debug_print(f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}")
             summary = action_result.update_summary({})
             summary["status"] = "failed"
             return action_result.set_status(phantom.APP_ERROR)
@@ -750,13 +708,9 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         self.save_progress("Alert Tag Passed")
 
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
-        self.debug_print("%s response: %s" % (self._banner, response))
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
+        self.debug_print("--------------------")
+        self.debug_print(f"{self._banner} response: {response}")
+        self.debug_print("--------------------")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -789,9 +743,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.debug_print(f"params={params}")
 
         # make rest call
-        ret_val, response = self._make_rest_call(
-            endpoint, action_result, method="post", json=params, headers=headers
-        )
+        ret_val, response = self._make_rest_call(endpoint, action_result, method="post", json=params, headers=headers)
 
         if phantom.is_fail(ret_val):
             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -803,9 +755,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                 phantom.APP_ERROR,
                 f"Error adding threat {source} on entity for: {asset_id}",
             )
-            self.debug_print(
-                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
-            )
+            self.debug_print(f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}")
             summary = action_result.update_summary({})
             summary["status"] = "failed"
             return action_result.set_status(phantom.APP_ERROR)
@@ -814,7 +764,6 @@ class ZerofoxAlertsConnector(BaseConnector):
         action_result.add_data(response)
 
         self.debug_print(f"threat_response={response}")
-        # self.debug_print('threat_alert={}'.format(response['alert_id']))
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
@@ -825,13 +774,10 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         self.save_progress("Threat Submit Passed")
 
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
+        self.debug_print("--------------------")
+
         self.debug_print("%s response: %s" % (self._banner, response))
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
+        self.debug_print("--------------------")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -846,18 +792,14 @@ class ZerofoxAlertsConnector(BaseConnector):
         endpoint = f"/1.0/alerts/{alert_id}/"
         headers = self._get_app_headers()
 
-        ret_val, response = self._make_rest_call(
-            endpoint, action_result, method="get", headers=headers
-        )
+        ret_val, response = self._make_rest_call(endpoint, action_result, method="get", headers=headers)
 
         if phantom.is_fail(ret_val):
             action_result.set_status(
                 phantom.APP_ERROR,
                 f"Error fetching alert with id: {alert_id}",
             )
-            self.debug_print(
-                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
-            )
+            self.debug_print(f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}")
             summary = action_result.update_summary({})
             summary["status"] = "failed"
             return action_result.set_status(phantom.APP_ERROR)
@@ -897,9 +839,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                 phantom.APP_ERROR,
                 f"Error changing notes on alert for {alert_id}, with notes {notes}",
             )
-            self.debug_print(
-                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
-            )
+            self.debug_print(f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}")
             summary = action_result.update_summary({})
             summary["status"] = "failed"
             return action_result.set_status(phantom.APP_ERROR)
@@ -941,9 +881,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.debug_print(f"params={params}")
 
         # make rest call
-        ret_val, response = self._make_rest_call(
-            endpoint, action_result, method="post", json=params, headers=headers
-        )
+        ret_val, response = self._make_rest_call(endpoint, action_result, method="post", json=params, headers=headers)
 
         if phantom.is_fail(ret_val):
             # the call to the 3rd party device or service failed, action result should contain all the error details
@@ -955,9 +893,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                 phantom.APP_ERROR,
                 f"Error taking {alert_action} action on alert data for: {alert_id}",
             )
-            self.debug_print(
-                f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}"
-            )
+            self.debug_print(f"Interim action_result dictionary after adding FAILURE status: {action_result.get_dict()}")
             summary = action_result.update_summary({})
             summary["status"] = "failed"
             return action_result.set_status(phantom.APP_ERROR)
@@ -973,13 +909,9 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         self.save_progress("Alert Action Passed")
 
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
+        self.debug_print("--------------------")
         self.debug_print("%s response: %s" % (self._banner, response))
-        self.debug_print(
-            "-------------------------------------------------------------"
-        )
+        self.debug_print("--------------------")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -1039,9 +971,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self._container_label = config["ingest"]["container_label"]
         self._actor = config.get("username")
         self._banner = "ZeroFOX Alerts Connector"
-        self.zf_client = ZeroFoxClient(
-            token=config.get("zerofox_api_token"), username=config.get("username")
-        )
+        self.zf_client = ZeroFoxClient(token=config.get("zerofox_api_token"), username=config.get("username"))
         self.mapper = AlertMapper(self._container_label, self.get_app_id())
 
         return phantom.APP_SUCCESS
