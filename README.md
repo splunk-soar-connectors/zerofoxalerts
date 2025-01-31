@@ -2,7 +2,7 @@
 # ZeroFox
 
 Publisher: ZeroFox  
-Connector Version: 3.6.0  
+Connector Version: 3.6.1  
 Product Vendor: ZeroFox  
 Product Name: ZeroFox  
 Product Version Supported (regex): ".\*"  
@@ -25,8 +25,8 @@ ZeroFox Alerts for Splunk SOAR
 [comment]: # either express or implied. See the License for the specific language governing permissions
 [comment]: # and limitations under the License.
 
-### Configuration Variables
-The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a ZeroFox asset in SOAR.
+### Configuration variables
+This table lists the configuration variables required to operate ZeroFox. These variables are specified when configuring a ZeroFox asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
