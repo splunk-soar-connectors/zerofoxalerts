@@ -1,6 +1,6 @@
 # File: zerofox_connector.py
 #
-# Copyright (c) ZeroFox, 2024
+# Copyright (c) ZeroFox, 2024-2025
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -220,7 +220,7 @@ class ZeroFoxClient:
 class ZerofoxAlertsConnector(BaseConnector):
     def __init__(self):
         # Call the BaseConnectors init first
-        super(ZerofoxAlertsConnector, self).__init__()
+        super().__init__()
 
         self._state = None
 
@@ -272,7 +272,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    "Unable to parse JSON response. Error: {0}".format(str(e)),
+                    f"Unable to parse JSON response. Error: {e!s}",
                 ),
                 None,
             )
@@ -282,7 +282,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} Data from server: {1}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
+        message = "Error from server. Status Code: {} Data from server: {}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -340,7 +340,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    "Error Connecting to server. Details: {0}".format(str(e)),
+                    f"Error Connecting to server. Details: {e!s}",
                 ),
                 resp_json,
             )
@@ -452,7 +452,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             except:
                 last_checked_alert_time = interval_startdate
 
-            self.debug_print("last_checked_alert_time: {}".format(last_checked_alert_time))
+            self.debug_print(f"last_checked_alert_time: {last_checked_alert_time}")
 
             if self.is_poll_now():
                 self.debug_print("POLL NOW")
@@ -460,8 +460,8 @@ class ZerofoxAlertsConnector(BaseConnector):
 
                 alert_params = {
                     "status": "open,escalated,investigation_completed",
-                    "limit": "%s" % str(param.get("artifact_count", 0)),
-                    "last_modified_min_date": "%s" % str(last_checked_alert_time),
+                    "limit": "{}".format(str(param.get("artifact_count", 0))),
+                    "last_modified_min_date": f"{last_checked_alert_time!s}",
                 }
 
             else:
@@ -469,7 +469,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
                 alert_params = {
                     "status": "open,escalated,investigation_completed",
-                    "last_modified_min_date": "%s" % str(last_checked_alert_time),
+                    "last_modified_min_date": f"{last_checked_alert_time!s}",
                 }
 
             if self._reviewed:
@@ -511,7 +511,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             for alert in response["alerts"]:
                 alert_id = alert["id"]
 
-                self.debug_print("alert_id: {}".format(alert_id))
+                self.debug_print(f"alert_id: {alert_id}")
 
                 # create container
                 status, message, container_id = self._save_alert(alert)
@@ -528,7 +528,7 @@ class ZerofoxAlertsConnector(BaseConnector):
                 # dont continue to get more than max if polling now
                 if not self.is_poll_now():
                     while next_url:
-                        self.debug_print("next_url: {}".format(next_url))
+                        self.debug_print(f"next_url: {next_url}")
 
                         alert_params = None
 
@@ -562,7 +562,7 @@ class ZerofoxAlertsConnector(BaseConnector):
             # set state
             if not self.is_poll_now() and alert_total > 0:
                 state_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
-                self.debug_print("updating _state to {}".format(state_time))
+                self.debug_print(f"updating _state to {state_time}")
 
                 self._state["last_polled"] = state_time
                 self.debug_print(f"saved state: {self._state}")
@@ -592,7 +592,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         action_result = ActionResult(dict(param))
         self.add_action_result(action_result)
-        self.debug_print("Initial action_result dictionary: {}".format(action_result.get_dict()))
+        self.debug_print(f"Initial action_result dictionary: {action_result.get_dict()}")
 
         alert_id = param.get("alert_id", 0.0)
 
@@ -776,7 +776,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         self.debug_print("--------------------")
 
-        self.debug_print("%s response: %s" % (self._banner, response))
+        self.debug_print(f"{self._banner} response: {response}")
         self.debug_print("--------------------")
 
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -875,7 +875,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         headers = self._get_app_headers()
 
-        params = {"actor": "%s" % self._actor}
+        params = {"actor": f"{self._actor}"}
 
         self.debug_print(f"token={self._api_key}")
         self.debug_print(f"params={params}")
@@ -910,7 +910,7 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.save_progress("Alert Action Passed")
 
         self.debug_print("--------------------")
-        self.debug_print("%s response: %s" % (self._banner, response))
+        self.debug_print(f"{self._banner} response: {response}")
         self.debug_print("--------------------")
 
         return action_result.set_status(phantom.APP_SUCCESS)
