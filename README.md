@@ -1,7 +1,7 @@
 # ZeroFox
 
 Publisher: ZeroFox \
-Connector Version: 3.6.1 \
+Connector Version: 3.6.2 \
 Product Vendor: ZeroFox \
 Product Name: ZeroFox \
 Minimum Product Version: 6.1.1
