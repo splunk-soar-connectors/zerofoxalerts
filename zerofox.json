@@ -26,9 +26,6 @@
     "min_phantom_version": "6.1.1",
     "fips_compliant": false,
     "app_wizard_version": "1.0.0",
-    "pip_dependencies": {
-        "wheel": []
-    },
     "configuration": {
         "zerofox_api_token": {
             "description": "ZeroFox API Token",
