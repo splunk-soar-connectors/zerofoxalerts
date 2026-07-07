@@ -19,8 +19,8 @@
         }
     ],
     "license": "Copyright (c) ZeroFox, 2024-2026",
-    "app_version": "3.6.2",
-    "utctime_updated": "2025-03-27T21:42:45.991106Z",
+    "app_version": "3.6.3",
+    "utctime_updated": "2026-07-07T23:52:59.561964Z",
     "package_name": "phantom_zerofox",
     "main_module": "zerofox_connector.py",
     "min_phantom_version": "6.1.1",
