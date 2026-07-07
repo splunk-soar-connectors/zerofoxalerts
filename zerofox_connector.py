@@ -1,6 +1,6 @@
 # File: zerofox_connector.py
 #
-# Copyright (c) ZeroFox, 2024-2025
+# Copyright (c) ZeroFox, 2024-2026
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -349,7 +349,6 @@ class ZerofoxAlertsConnector(BaseConnector):
 
     def _test_connectivity(self, param):
         self.save_progress("Checking ZeroFOX API Credentials...")
-        self.save_progress(f"token={self._api_key}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -480,7 +479,6 @@ class ZerofoxAlertsConnector(BaseConnector):
 
             headers = self._get_app_headers()
 
-            self.debug_print(f"token={self._api_key}")
             self.debug_print(f"params={alert_params}")
 
             # make rest call
@@ -619,7 +617,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         headers = self._get_app_headers()
 
-        self.debug_print(f"token={self._api_key}")
+        self.debug_print(f"Making REST call to: {endpoint}")
 
         # make rest call
         ret_val, response = self._make_rest_call(endpoint, action_result, params=None, headers=headers)
@@ -676,7 +674,6 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         params = {"changes": [changes]}
 
-        self.debug_print(f"token={self._api_key}")
         self.debug_print(f"params={params}")
 
         # make rest call
@@ -739,7 +736,6 @@ class ZerofoxAlertsConnector(BaseConnector):
             "entity_id": asset_id,
         }
 
-        self.debug_print(f"token={self._api_key}")
         self.debug_print(f"params={params}")
 
         # make rest call
@@ -877,8 +873,7 @@ class ZerofoxAlertsConnector(BaseConnector):
 
         params = {"actor": f"{self._actor}"}
 
-        self.debug_print(f"token={self._api_key}")
-        self.debug_print(f"params={params}")
+        self.debug_print(f"Making REST call to: {endpoint}")
 
         # make rest call
         ret_val, response = self._make_rest_call(endpoint, action_result, method="post", json=params, headers=headers)
