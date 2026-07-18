@@ -16,6 +16,7 @@
 import json
 import sys
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
 
 # Phantom App imports
 import phantom.app as phantom
@@ -328,8 +329,17 @@ class ZerofoxAlertsConnector(BaseConnector):
                 resp_json,
             )
 
-        # Create a URL to connect to
-        if "https://api.zerofox.com" in endpoint:
+        parsed_endpoint = urlparse(endpoint)
+        if parsed_endpoint.scheme:
+            expected_endpoint = urlparse(ZEROFOX_API_URL)
+            if parsed_endpoint.scheme != expected_endpoint.scheme or parsed_endpoint.hostname != expected_endpoint.hostname:
+                return RetVal(
+                    action_result.set_status(
+                        phantom.APP_ERROR,
+                        "URL must use the ZeroFOX API host.",
+                    ),
+                    resp_json,
+                )
             url = endpoint
         else:
             url = self._base_url + endpoint

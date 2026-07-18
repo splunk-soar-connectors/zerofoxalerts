@@ -1,3 +1,3 @@
 **Unreleased**
 
-* Updated connector development tooling.
+* Restricted paginated requests to the ZeroFOX API host.
