@@ -28,6 +28,9 @@ from phantom.base_connector import BaseConnector
 from zerofox_consts import ZEROFOX_API_URL
 
 
+ALLOWED_ALERT_ACTIONS = {"close", "escalate", "request_takedown", "mark_not_helpful"}
+
+
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
@@ -379,6 +382,25 @@ class ZerofoxAlertsConnector(BaseConnector):
         self.save_progress("Test Connectivity Passed")
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _get_validated_alert_id(self, param, action_result):
+        try:
+            alert_id = int(param.get("alert_id"))
+        except (TypeError, ValueError):
+            action_result.set_status(
+                phantom.APP_ERROR,
+                "Please provide a valid integer value in the 'alert_id' parameter",
+            )
+            return None
+
+        if alert_id < 0:
+            action_result.set_status(
+                phantom.APP_ERROR,
+                "Please provide a valid non-negative integer value in the 'alert_id' parameter",
+            )
+            return None
+
+        return alert_id
+
     def _phantom_daterange(self, param):
         """
         Extract Phantom start time and end time as datetime objects.
@@ -665,7 +687,9 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        alert_id = param.get("alert_id")
+        alert_id = self._get_validated_alert_id(param, action_result)
+        if alert_id is None:
+            return action_result.get_status()
         alert_tag = param.get("alert_tag")
         tag_action = param.get("tag_action", "add")
 
@@ -873,8 +897,16 @@ class ZerofoxAlertsConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        alert_id = param.get("alert_id")
+        alert_id = self._get_validated_alert_id(param, action_result)
+        if alert_id is None:
+            return action_result.get_status()
+
         alert_action = param.get("alert_action", "close")
+        if alert_action not in ALLOWED_ALERT_ACTIONS:
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "Please provide a valid value in the 'alert_action' parameter",
+            )
 
         self.save_progress(f"Issuing {alert_action} on alert {alert_id}")
         endpoint = f"/1.0/alerts/{alert_id}/{alert_action}/"
